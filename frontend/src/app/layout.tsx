@@ -15,6 +15,7 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://imboniapplicationhub.vercel.app'),
   title: "Imboni Application Hub | Your Gateway to Global Scholarships",
   description: "Unlocking global opportunities for African scholars. Access scholarships, jobs, and professional writing services.",
   keywords: ["Scholarships", "African Students", "Study Abroad", "Imboni Application Hub", "Rwanda Scholarships", "CV Writing Services", "Visa Consulting"],
@@ -22,7 +23,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Imboni Application Hub",
     description: "Unlocking global opportunities for African scholars.",
-    url: "https://imbonihub.com",
+    url: "/",
     siteName: "Imboni Hub",
     images: [{ url: "/logo.png", width: 800, height: 600 }],
     locale: "en_US",

@@ -121,7 +121,7 @@ export default function SystemHealth() {
               <div className="space-y-4">
                  <h4 className="text-sm font-black uppercase tracking-widest text-[#E1B12C]">XML Sitemap</h4>
                  <div className="p-4 bg-white/5 rounded-2xl text-xs font-mono text-slate-400 break-all border border-white/5">
-                    https://imbonihub.com/sitemap.xml
+                    https://imboniapplicationhub.vercel.app/sitemap.xml
                  </div>
                  <button className="w-full py-4 bg-[#E1B12C] text-[#0A2647] font-black rounded-2xl hover:scale-[1.02] transition-transform">
                     REGENERATE & SUBMIT
