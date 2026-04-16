@@ -23,6 +23,7 @@ export default function CMSHub() {
   const [activeTab, setActiveTab] = useState('opportunities');
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [cmsStats, setCmsStats] = useState({ published: 0, drafts: 0, scheduled: 0 });
   const [modal, setModal] = useState<{ isOpen: boolean, type: 'info' | 'success' | 'error' | 'confirm', title: string, message: string, onConfirm?: () => void, confirmText?: string }>({ isOpen: false, type: 'info', title: '', message: '' });
   const [editingItem, setEditingItem] = useState<any>(null);
 
@@ -46,8 +47,20 @@ export default function CMSHub() {
       });
   };
 
+  const fetchStats = () => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/cms/stats`, {
+      headers: { 'Authorization': `Bearer ${localStorage.getItem('imboni_token')}` }
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.published !== undefined) setCmsStats(data);
+      })
+      .catch(() => {});
+  };
+
   useEffect(() => {
     fetchContent();
+    fetchStats();
   }, [activeTab]);
 
   const handleDelete = async (id: string) => {
@@ -62,6 +75,7 @@ export default function CMSHub() {
       });
       if (res.ok) {
         setItems(items.filter(item => item.id !== id));
+        fetchStats();
         setModal({ isOpen: true, type: 'success', title: 'Deleted', message: 'Item has been permanently removed.' });
       }
     } catch (error) {
@@ -102,6 +116,7 @@ export default function CMSHub() {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${endpoint}`, requestOptions);
       if (res.ok) {
         fetchContent();
+        fetchStats();
         setEditingItem(null);
         setModal({ isOpen: true, type: 'success', title: 'Updated', message: 'Changes saved successfully.' });
       }
@@ -182,15 +197,15 @@ export default function CMSHub() {
               <div className="space-y-6">
                  <div className="flex justify-between items-center">
                     <span className="text-sm font-bold opacity-60">Published</span>
-                    <span className="text-xl font-black">24</span>
+                    <span className="text-xl font-black">{cmsStats.published}</span>
                  </div>
                  <div className="flex justify-between items-center">
                     <span className="text-sm font-bold opacity-60">Drafts</span>
-                    <span className="text-xl font-black text-[#E1B12C]">2</span>
+                    <span className="text-xl font-black text-[#E1B12C]">{cmsStats.drafts}</span>
                  </div>
                  <div className="flex justify-between items-center">
                     <span className="text-sm font-bold opacity-60">Scheduled</span>
-                    <span className="text-xl font-black">0</span>
+                    <span className="text-xl font-black">{cmsStats.scheduled}</span>
                  </div>
               </div>
            </div>

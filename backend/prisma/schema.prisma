@@ -117,3 +117,9 @@ model GlobalSettings {
   instagramHandle String?
   updatedAt       DateTime @updatedAt
 }
+
+model PageView {
+  id        String   @id @default(cuid())
+  path      String
+  timestamp DateTime @default(now())
+}

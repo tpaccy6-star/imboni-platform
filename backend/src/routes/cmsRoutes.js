@@ -3,6 +3,8 @@ const router = express.Router();
 const cmsController = require('../controllers/cmsController');
 const { authorize } = require('../middleware/rbac');
 
+router.get('/stats', authorize(['SUPERADMIN', 'ADMIN', 'EDITOR']), cmsController.getCmsStats);
+
 router.get('/posts', cmsController.getPosts);
 router.post('/posts', authorize(['SUPERADMIN', 'ADMIN', 'EDITOR']), cmsController.createPost);
 router.patch('/posts/:id', authorize(['SUPERADMIN', 'ADMIN', 'EDITOR']), cmsController.updatePost);

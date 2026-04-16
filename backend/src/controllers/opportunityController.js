@@ -16,9 +16,10 @@ const getAllOpportunities = async (req, res) => {
 const createOpportunity = async (req, res) => {
     let { title, description, tag, deadline, link, image } = req.body;
     
-    // If a file was uploaded, use the local path instead
+    // If a file was uploaded, use the dynamic URL
     if (req.file) {
-        image = `http://localhost:5000/uploads/${req.file.filename}`;
+        const baseUrl = process.env.BACKEND_URL || 'http://localhost:5000';
+        image = `${baseUrl}/uploads/${req.file.filename}`;
     }
 
     try {
@@ -47,7 +48,8 @@ const updateOpportunity = async (req, res) => {
     const data = req.body;
     
     if (req.file) {
-        data.image = `http://localhost:5000/uploads/${req.file.filename}`;
+        const baseUrl = process.env.BACKEND_URL || 'http://localhost:5000';
+        data.image = `${baseUrl}/uploads/${req.file.filename}`;
     }
     
     try {

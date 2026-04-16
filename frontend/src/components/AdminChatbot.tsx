@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageSquare, X, Send, Sparkles, Loader2, Copy, Check, Maximize2, Minimize2 } from 'lucide-react';
+import { MessageSquare, X, Send, Sparkles, Loader2, Copy, Check, Maximize2, Minimize2, Plus } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -59,6 +59,31 @@ export default function AdminChatbot() {
     navigator.clipboard.writeText(text);
     setCopiedIndex(index);
     setTimeout(() => setCopiedIndex(null), 2000);
+  };
+
+  const handleSaveScholarship = async (data: any, index: number) => {
+    setLoading(true);
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/opportunities`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('imboni_token')}`
+        },
+        body: JSON.stringify({ ...data, published: false }) // Default to draft
+      });
+      if (res.ok) {
+        setMessages(prev => {
+          const updated = [...prev];
+          updated[index] = { ...updated[index], content: updated[index].content.replace(/\[PROPOSE_SCHOLARSHIP\][\s\S]*?\[\/PROPOSE_SCHOLARSHIP\]/, "\n\n✅ **Action Complete:** This scholarship has been added to your hub as a draft.") };
+          return updated;
+        });
+      }
+    } catch (error) {
+       console.error("Save error:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Custom CSS classes for the Markdown rendering to ensure great table formatting
@@ -124,7 +149,33 @@ export default function AdminChatbot() {
                      <p>{m.content}</p>
                   ) : (
                      <div className="markdown-content overflow-x-auto">
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                           {m.content.replace(/\[PROPOSE_SCHOLARSHIP\][\s\S]*?\[\/PROPOSE_SCHOLARSHIP\]/g, "")}
+                        </ReactMarkdown>
+                        
+                        {m.content.includes('[PROPOSE_SCHOLARSHIP]') && (
+                          <div className="mt-6 p-4 bg-[#E1B12C]/10 border border-[#E1B12C]/20 rounded-2xl flex flex-col gap-3">
+                             <div className="flex items-center gap-2 text-[#E1B12C] font-bold text-xs uppercase tracking-widest">
+                                <Plus size={14} />
+                                Proposed Integration
+                             </div>
+                             <p className="text-[10px] text-slate-500 font-medium">I found this opportunity matches your hub's criteria. Tap below to save it for review.</p>
+                             <button 
+                               onClick={() => {
+                                 const match = m.content.match(/\[PROPOSE_SCHOLARSHIP\]([\s\S]*?)\[\/PROPOSE_SCHOLARSHIP\]/);
+                                 if (match) {
+                                   try {
+                                     const data = JSON.parse(match[1]);
+                                     handleSaveScholarship(data, idx);
+                                   } catch(e) { console.error("Parse Error", e); }
+                                 }
+                               }}
+                               className="w-full py-2 bg-[#E1B12C] text-[#0A2647] font-bold rounded-xl text-xs hover:scale-[1.02] transition-transform active:scale-95"
+                             >
+                               🚀 Add to Hub Directory
+                             </button>
+                          </div>
+                        )}
                      </div>
                   )}
                   

@@ -8,12 +8,13 @@ const settingsRoutes = require('./routes/settingsRoutes');
 const cmsRoutes = require('./routes/cmsRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
 const aiRoutes = require('./routes/aiRoutes');
-
+const trafficTracker = require('./middleware/tracker');
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(trafficTracker);
 app.use('/uploads', express.static('public/uploads'));
 
 // Main modularized routes

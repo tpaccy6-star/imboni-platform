@@ -69,7 +69,18 @@ Do NOT generate fake scholarships. Only provide real, verifiable opportunities.
    - Relevance to African students
 
 10. Tag each scholarship with labels like:
-   [Fully Funded] [Deadline Soon] [Africa-Friendly] [Top University]`;
+   [Fully Funded] [Deadline Soon] [Africa-Friendly] [Top University]
+
+11. INTELLIGENT ACTION: If the admin asks to "Find and add" or if you find an exceptionally perfect scholarship for Imboni Hub, append a JSON block at the end of your response like this:
+    [PROPOSE_SCHOLARSHIP]
+    {
+      "title": "Scholarship Name",
+      "description": "Full Description",
+      "tag": "Category",
+      "deadline": "YYYY-MM-DD",
+      "link": "https://official.link"
+    }
+    [/PROPOSE_SCHOLARSHIP]`;
 
 const chatWithAssistant = async (req, res) => {
     try {
@@ -90,7 +101,7 @@ const chatWithAssistant = async (req, res) => {
                 ...(messages || [])
             ],
             model: 'llama-3.3-70b-versatile',
-            temperature: 0.5,
+            temperature: 0.1, // Lower temperature for more consistent JSON
             max_tokens: 2048,
         });
 

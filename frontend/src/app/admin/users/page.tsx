@@ -46,6 +46,21 @@ export default function UserManagement() {
     if (res.ok) fetchUsers();
   };
 
+  const handleDeleteUser = async (userId: string, name: string) => {
+    if (!confirm(`Are you sure you want to permanently delete the user "${name}"? This action cannot be undone.`)) return;
+
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/users/${userId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('imboni_token')}` }
+      });
+      if (res.ok) fetchUsers();
+      else alert("Failed to delete user. Ensure you have Super Admin privileges.");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const filteredUsers = users.filter(u => 
     u.name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
     u.email?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -137,13 +152,13 @@ export default function UserManagement() {
                   </td>
                   <td className="px-8 py-6">
                     <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                       <button title="View Logs" className="p-2 hover:bg-slate-100 dark:hover:bg-white/10 rounded-lg text-slate-400 transition-all">
+                       <button onClick={() => alert("Audit log viewer for specific users is being integrated into the main feed.")} title="View Logs" className="p-2 hover:bg-slate-100 dark:hover:bg-white/10 rounded-lg text-slate-400 transition-all">
                           <Activity size={18} />
                        </button>
-                       <button title="Restrict Access" className="p-2 hover:bg-yellow-50 dark:hover:bg-yellow-500/10 rounded-lg text-yellow-500 transition-all">
+                       <button onClick={() => alert("Restricting access is currently handled by setting the role to VIEWER.")} title="Restrict Access" className="p-2 hover:bg-yellow-50 dark:hover:bg-yellow-500/10 rounded-lg text-yellow-500 transition-all">
                           <Shield size={18} />
                        </button>
-                       <button title="Delete Account" className="p-2 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg text-red-400 transition-all">
+                       <button onClick={() => handleDeleteUser(user.id, user.name || user.email)} title="Delete Account" className="p-2 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg text-red-400 transition-all">
                           <Trash2 size={18} />
                        </button>
                     </div>

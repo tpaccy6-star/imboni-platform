@@ -110,6 +110,24 @@ const deletePage = async (req, res) => {
     }
 };
 
+const getCmsStats = async (req, res) => {
+    try {
+        const postsCount = await prisma.cMS_Post.count();
+        const publishedPosts = await prisma.cMS_Post.count({ where: { published: true } });
+        const draftPosts = postsCount - publishedPosts;
+        const pagesCount = await prisma.cMS_Page.count();
+
+        res.json({
+            published: publishedPosts,
+            drafts: draftPosts,
+            scheduled: 0, // Not implemented yet
+            totalPages: pagesCount
+        });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch CMS stats' });
+    }
+};
+
 module.exports = {
     getPosts,
     createPost,
@@ -118,5 +136,6 @@ module.exports = {
     getPages,
     createPage,
     updatePage,
-    deletePage
+    deletePage,
+    getCmsStats
 };
