@@ -15,7 +15,9 @@ import {
   ChevronLeft,
   ChevronRight,
   Monitor,
-  Activity
+  Activity,
+  Menu,
+  X
 } from 'lucide-react';
 import AdminChatbot from '@/components/AdminChatbot';
 
@@ -24,6 +26,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
@@ -31,11 +34,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     if (!token) {
       router.push('/login');
     } else {
-      // Simplistic decode/fetch for now
       setUser({ role: 'SUPERADMIN', name: 'Webmaster' });
       setLoading(false);
     }
   }, [router]);
+
+  // Close mobile menu on path change
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
 
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center bg-[#0F172A]">
@@ -60,22 +67,42 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#020617] flex transition-colors duration-500">
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#020617] flex transition-colors duration-500 overflow-x-hidden">
+      {/* Mobile Backdrop */}
+      {mobileOpen && (
+        <div 
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden transition-opacity"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+
       {/* Dynamic Sidebar */}
-      <aside className={`bg-[#0A2647] text-white flex flex-col transition-all duration-300 relative border-r border-white/5 ${collapsed ? 'w-20' : 'w-72'}`}>
+      <aside className={`
+        bg-[#0A2647] text-white flex flex-col transition-all duration-300 fixed md:relative z-50 h-full border-r border-white/5
+        ${mobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+        ${collapsed ? 'md:w-20' : 'md:w-72'} w-72
+      `}>
         <div className="p-6 mb-8 flex items-center justify-between">
-          {!collapsed && (
+          {(!collapsed || mobileOpen) && (
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-[#E1B12C] text-[#0A2647] rounded-xl flex items-center justify-center font-bold">I</div>
               <span className="font-extrabold text-xl tracking-tighter">IMBONI <span className="text-[#E1B12C]">PRO</span></span>
             </div>
           )}
-          <button 
-            onClick={() => setCollapsed(!collapsed)}
-            className="p-1.5 hover:bg-white/10 rounded-lg transition-colors"
-          >
-            {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
-          </button>
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={() => setCollapsed(!collapsed)}
+              className="hidden md:block p-1.5 hover:bg-white/10 rounded-lg transition-colors"
+            >
+              {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+            </button>
+            <button 
+              onClick={() => setMobileOpen(false)}
+              className="md:hidden p-1.5 hover:bg-white/10 rounded-lg transition-colors"
+            >
+              <X size={20} />
+            </button>
+          </div>
         </div>
 
         <nav className="flex-1 px-4 space-y-1">
@@ -93,15 +120,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 }`}
               >
                 <Icon size={20} className={active ? 'text-[#0A2647]' : 'group-hover:scale-110 transition-transform'} />
-                {!collapsed && <span className="text-sm">{item.label}</span>}
+                {(!collapsed || mobileOpen) && <span className="text-sm">{item.label}</span>}
               </Link>
             );
           })}
         </nav>
 
         <div className="p-4 border-t border-white/10">
-           <div className={`flex items-center gap-4 p-4 rounded-2xl bg-white/5 ${collapsed ? 'justify-center' : ''}`}>
-              {!collapsed && (
+           <div className={`flex items-center gap-4 p-4 rounded-2xl bg-white/5 ${collapsed && !mobileOpen ? 'justify-center' : ''}`}>
+              {(!collapsed || mobileOpen) && (
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-bold truncate">{user?.name}</p>
                   <p className="text-[10px] text-slate-400 uppercase tracking-widest">{user?.role}</p>
@@ -121,14 +148,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Main Content Hub */}
       <main className="flex-1 flex flex-col h-screen overflow-hidden">
         {/* Header Bar */}
-        <header className="h-20 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-white/5 flex items-center justify-between px-8 z-20">
+        <header className="h-20 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-white/5 flex items-center justify-between px-4 sm:px-8 z-20">
            <div className="flex items-center gap-4">
-              <h2 className="text-lg font-bold text-[#0A2647] dark:text-white capitalize">
+              <button 
+                onClick={() => setMobileOpen(true)}
+                className="md:hidden p-2 text-[#0A2647] dark:text-white hover:bg-slate-100 dark:hover:bg-white/5 rounded-xl transition-colors"
+              >
+                <Menu size={24} />
+              </button>
+              <h2 className="text-lg font-bold text-[#0A2647] dark:text-white capitalize truncate hidden sm:block">
                 {pathname.split('/').pop() || 'Dashboard'}
               </h2>
            </div>
-           <div className="flex items-center gap-6">
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-green-500/10 text-green-500 rounded-full text-[10px] font-black uppercase tracking-wider">
+           <div className="flex items-center gap-3 sm:gap-6">
+              <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-green-500/10 text-green-500 rounded-full text-[10px] font-black uppercase tracking-wider">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                 Systems Operational
               </div>
@@ -136,18 +169,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                  <Bell size={20} />
                  <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full" />
               </button>
-              <div className="w-10 h-10 rounded-full bg-slate-200 dark:bg-white/10 overflow-hidden">
-                 <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Admin" alt="avatar" />
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-200 dark:bg-white/10 overflow-hidden ring-2 ring-slate-100 dark:ring-white/5">
+                 <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Admin" alt="avatar" className="w-full h-full object-cover" />
               </div>
            </div>
         </header>
 
-         <div className="flex-1 overflow-y-auto p-8 md:p-12 space-y-12">
+         <div className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 lg:p-12 space-y-8 md:space-y-12 transition-all">
            {children}
          </div>
          
          <AdminChatbot />
        </main>
-     </div>
-   );
- }
+    </div>
+  );
+}

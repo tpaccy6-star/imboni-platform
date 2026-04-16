@@ -49,12 +49,12 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-8">
       {/* Welcome Header */}
-      <div className="flex justify-between items-center bg-white dark:bg-slate-900 p-8 rounded-3xl shadow-sm border border-slate-200 dark:border-white/5">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200 dark:border-white/5 gap-6">
         <div>
-          <h1 className="text-3xl font-bold text-[#0A2647] dark:text-white">Welcome back, Admin</h1>
-          <p className="text-slate-500 dark:text-slate-400">Here's what's happening at Imboni Hub today.</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#0A2647] dark:text-white">Welcome back, Admin</h1>
+          <p className="text-slate-500 dark:text-slate-400 text-sm sm:text-base">Here's what's happening at Imboni Hub today.</p>
         </div>
-        <button onClick={() => router.push('/admin/upload')} className="btn-primary !py-2 flex items-center gap-2">
+        <button onClick={() => router.push('/admin/upload')} className="btn-primary !py-2.5 w-full sm:w-auto flex items-center justify-center gap-2">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
           </svg>
@@ -64,11 +64,11 @@ export default function AdminDashboard() {
 
       {/* Stats Grid */}
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-pulse">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 animate-pulse">
             {[1,2,3,4].map(i => <div key={i} className="bg-slate-100 dark:bg-slate-800 h-32 rounded-2xl"></div>)}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {statsRender.map((s, i) => (
             <div key={i} className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-white/5 shadow-sm">
               <div className="flex justify-between items-start mb-4">
@@ -80,7 +80,7 @@ export default function AdminDashboard() {
                 </span>
               </div>
               <h3 className="text-slate-400 text-sm font-bold uppercase tracking-widest">{s.label}</h3>
-              <p className="text-3xl font-bold text-[#0A2647] dark:text-white mt-1">{s.value}</p>
+              <p className="text-2xl sm:text-3xl font-bold text-[#0A2647] dark:text-white mt-1">{s.value}</p>
             </div>
           ))}
         </div>
@@ -89,27 +89,27 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Recent Service Requests */}
         <div className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-white/5 shadow-sm overflow-hidden">
-          <div className="p-8 border-b border-slate-100 dark:border-white/5 flex justify-between items-center">
+          <div className="p-6 sm:p-8 border-b border-slate-100 dark:border-white/5 flex justify-between items-center">
             <h3 className="text-xl font-bold text-[#0A2647] dark:text-white">Recent Requests</h3>
             <button className="text-[#205295] dark:text-[#E1B12C] font-bold text-sm hover:underline">View All</button>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-left">
+            <table className="w-full text-left min-w-[600px] sm:min-w-0">
               <thead>
                 <tr className="bg-slate-50 dark:bg-white/5 text-slate-400 text-[10px] uppercase font-bold tracking-widest">
-                  <th className="px-8 py-4">Client Name</th>
-                  <th className="px-8 py-4">Service</th>
-                  <th className="px-8 py-4">Status</th>
-                  <th className="px-8 py-4">Time</th>
-                  <th className="px-8 py-4"></th>
+                  <th className="px-6 sm:px-8 py-4">Client Name</th>
+                  <th className="px-6 sm:px-8 py-4">Service</th>
+                  <th className="px-6 sm:px-8 py-4">Status</th>
+                  <th className="px-6 sm:px-8 py-4 hidden sm:table-cell">Time</th>
+                  <th className="px-6 sm:px-8 py-4"></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50 dark:divide-white/5">
                 {data.recentRequests && data.recentRequests.length > 0 ? data.recentRequests.map((r: any, i: number) => (
                   <tr key={i} className="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
-                    <td className="px-8 py-4 font-bold text-[#0A2647] dark:text-white">{r.name}</td>
-                    <td className="px-8 py-4 text-slate-500 dark:text-slate-400">{r.service}</td>
-                    <td className="px-8 py-4">
+                    <td className="px-6 sm:px-8 py-4 font-bold text-[#0A2647] dark:text-white">{r.name}</td>
+                    <td className="px-6 sm:px-8 py-4 text-slate-500 dark:text-slate-400">{r.service}</td>
+                    <td className="px-6 sm:px-8 py-4">
                        <span className={`text-[10px] font-bold px-2 py-1 rounded-full ${
                          r.status === 'New' ? 'bg-blue-500/10 text-blue-500' : 
                          r.status === 'Completed' ? 'bg-green-500/10 text-green-500' : 'bg-orange-500/10 text-orange-500'
@@ -117,8 +117,8 @@ export default function AdminDashboard() {
                          {r.status}
                        </span>
                     </td>
-                    <td className="px-8 py-4 text-slate-400 text-sm">{new Date(r.date).toLocaleDateString()}</td>
-                    <td className="px-8 py-4 text-right">
+                    <td className="px-6 sm:px-8 py-4 text-slate-400 text-sm hidden sm:table-cell">{new Date(r.date).toLocaleDateString()}</td>
+                    <td className="px-6 sm:px-8 py-4 text-right">
                       <button className="text-slate-300 hover:text-[#0A2647] dark:hover:text-white transition-colors">
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
@@ -137,7 +137,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Popular Opportunities / Quick Actions */}
-        <div className="bg-[#0A2647] dark:bg-slate-900 border dark:border-white/5 rounded-3xl p-8 text-white relative overflow-hidden flex flex-col">
+        <div className="bg-[#0A2647] dark:bg-slate-900 border dark:border-white/5 rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden flex flex-col min-h-[400px]">
            <h3 className="text-xl font-bold mb-6">Popular Scholarships</h3>
            <div className="space-y-4 flex-1 relative z-10">
              {data.popularOpportunities && data.popularOpportunities.length > 0 ? data.popularOpportunities.map((op: any, index: number) => (

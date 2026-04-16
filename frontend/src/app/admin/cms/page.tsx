@@ -126,7 +126,7 @@ export default function CMSHub() {
   };
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-8 sm:space-y-12">
       <StatusModal 
         isOpen={modal.isOpen}
         onClose={() => setModal({ ...modal, isOpen: false })}
@@ -147,8 +147,8 @@ export default function CMSHub() {
 
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div>
-          <h1 className="text-4xl font-bold text-[#0A2647] dark:text-white mb-2">Content Management</h1>
-          <p className="text-slate-500">Create, edit and publish scholarships, blog posts, and site pages.</p>
+          <h1 className="text-3xl sm:text-4xl font-bold text-[#0A2647] dark:text-white mb-2">Content Management</h1>
+          <p className="text-slate-500 text-sm sm:text-base">Create, edit and publish scholarships, blog posts, and site pages.</p>
         </div>
         <button 
           onClick={() => {
@@ -160,15 +160,15 @@ export default function CMSHub() {
               message: 'The Blog/Page visual editor is being synchronized with the new database schema. Use the upload tool for scholarships in the meantime.'
             });
           }}
-          className="btn-primary flex items-center gap-2 !px-8 h-14"
+          className="btn-primary w-full md:w-auto flex items-center justify-center gap-2 !px-8 h-12 sm:h-14"
         >
           <Plus size={20} />
           Create New {activeTab === 'opportunities' ? 'Scholarship' : 'Content'}
         </button>
       </div>
 
-      {/* CMS Tabs */}
-      <div className="flex gap-4 border-b border-slate-200 dark:border-white/5 pb-0">
+      {/* CMS Tabs - Scrollable on mobile */}
+      <div className="flex gap-2 sm:gap-4 border-b border-slate-200 dark:border-white/5 pb-0 overflow-x-auto no-scrollbar">
         {[
           { id: 'opportunities', label: 'Scholarships', icon: BookOpen },
           { id: 'posts', label: 'Blog Posts', icon: FileText },
@@ -177,7 +177,7 @@ export default function CMSHub() {
           <button 
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-2 px-8 py-4 text-sm font-bold transition-all border-b-2 ${
+            className={`flex items-center gap-2 px-4 sm:px-8 py-4 text-xs sm:text-sm font-bold transition-all border-b-2 whitespace-nowrap ${
               activeTab === tab.id 
               ? 'border-[#E1B12C] text-[#0A2647] dark:text-white' 
               : 'border-transparent text-slate-400 hover:text-slate-600'
@@ -191,26 +191,26 @@ export default function CMSHub() {
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
         {/* Statistics & Filter Sidebar */}
-        <div className="space-y-6">
-           <div className="bg-[#0A2647] p-8 rounded-[2.5rem] text-white shadow-xl">
-              <h4 className="text-xs font-black uppercase tracking-widest text-[#E1B12C] mb-6">Archive Stats</h4>
-              <div className="space-y-6">
+        <div className="space-y-6 order-2 lg:order-1">
+           <div className="bg-[#0A2647] p-8 rounded-3xl sm:rounded-[2.5rem] text-white shadow-xl">
+              <h4 className="text-[10px] font-black uppercase tracking-widest text-[#E1B12C] mb-6">Archive Stats</h4>
+              <div className="space-y-4 sm:space-y-6">
                  <div className="flex justify-between items-center">
                     <span className="text-sm font-bold opacity-60">Published</span>
-                    <span className="text-xl font-black">{cmsStats.published}</span>
+                    <span className="text-lg sm:text-xl font-black">{cmsStats.published}</span>
                  </div>
                  <div className="flex justify-between items-center">
                     <span className="text-sm font-bold opacity-60">Drafts</span>
-                    <span className="text-xl font-black text-[#E1B12C]">{cmsStats.drafts}</span>
+                    <span className="text-lg sm:text-xl font-black text-[#E1B12C]">{cmsStats.drafts}</span>
                  </div>
                  <div className="flex justify-between items-center">
                     <span className="text-sm font-bold opacity-60">Scheduled</span>
-                    <span className="text-xl font-black">{cmsStats.scheduled}</span>
+                    <span className="text-lg sm:text-xl font-black">{cmsStats.scheduled}</span>
                  </div>
               </div>
            </div>
 
-           <div className="bg-white dark:bg-slate-900 p-6 rounded-[2rem] border border-slate-100 dark:border-white/5">
+           <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-100 dark:border-white/5">
               <div className="relative mb-6">
                  <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                  <input type="text" placeholder="Search archive..." className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl text-xs outline-none" />
@@ -227,52 +227,52 @@ export default function CMSHub() {
         </div>
 
         {/* Content List */}
-        <div className="lg:col-span-3 space-y-6">
+        <div className="lg:col-span-3 space-y-4 sm:space-y-6 order-1 lg:order-2">
           {loading ? (
-             <div className="p-20 text-center animate-pulse">Retreiving content library...</div>
+             <div className="p-20 text-center animate-pulse text-[#0A2647] dark:text-white font-black tracking-widest uppercase text-xs">Retreiving content library...</div>
           ) : items.length === 0 ? (
-             <div className="bg-white dark:bg-slate-900 p-20 rounded-[3rem] border border-dashed border-slate-200 dark:border-white/10 text-center text-slate-400">
+             <div className="bg-white dark:bg-slate-900 p-12 sm:p-20 rounded-[2rem] sm:rounded-[3rem] border border-dashed border-slate-200 dark:border-white/10 text-center text-slate-400">
                 No {activeTab} found in your archive.
              </div>
           ) : items.map((item) => (
-            <div key={item.id} className="bg-white dark:bg-slate-900 p-6 rounded-[2rem] border border-slate-100 dark:border-white/5 shadow-sm hover:shadow-xl transition-all group flex flex-col md:flex-row items-center gap-6">
-               <div className="w-24 h-24 bg-slate-100 dark:bg-white/5 rounded-2xl overflow-hidden flex-shrink-0">
+            <div key={item.id} className="bg-white dark:bg-slate-900 p-4 sm:p-6 rounded-2xl sm:rounded-[2rem] border border-slate-100 dark:border-white/5 shadow-sm hover:shadow-xl transition-all group flex items-start gap-4 sm:gap-6">
+               <div className="w-16 h-16 sm:w-24 sm:h-24 bg-slate-100 dark:bg-white/5 rounded-xl sm:rounded-2xl overflow-hidden flex-shrink-0">
                   {item.image ? (
                     <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-slate-300">
-                       <FileText size={32} />
+                       <FileText size={24} className="sm:w-8 sm:h-8" />
                     </div>
                   )}
                </div>
                
                <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-3 mb-1">
-                    <span className="px-2.5 py-0.5 bg-[#E1B12C]/10 text-[#E1B12C] text-[10px] font-black rounded-full uppercase tracking-widest">{item.tag || 'POST'}</span>
-                    <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400">
+                    <span className="px-2 py-0.5 bg-[#E1B12C]/10 text-[#E1B12C] text-[8px] sm:text-[10px] font-black rounded-full uppercase tracking-widest">{item.tag || 'POST'}</span>
+                    <div className="hidden sm:flex items-center gap-1.5 text-[10px] font-bold text-slate-400">
                        <CheckCircle2 size={12} className="text-green-500" />
                        Published
                     </div>
                   </div>
-                  <h3 className="text-lg font-black text-[#0A2647] dark:text-white mb-2 truncate group-hover:text-[#E1B12C] transition-colors">{item.title}</h3>
-                  <div className="flex items-center gap-4 text-xs font-bold text-slate-400">
-                     <span className="flex items-center gap-1.5"><Clock size={14} /> Last updated 2 days ago</span>
-                     <span className="flex items-center gap-1.5"><Eye size={14} /> 1.2k Views</span>
+                  <h3 className="text-base sm:text-lg font-black text-[#0A2647] dark:text-white mb-1 sm:mb-2 truncate group-hover:text-[#E1B12C] transition-colors">{item.title}</h3>
+                  <div className="flex items-center gap-4 text-[10px] sm:text-xs font-bold text-slate-400">
+                     <span className="flex items-center gap-1.5"><Clock size={14} /> <span className="hidden sm:inline">Last updated </span>2d ago</span>
+                     <span className="flex items-center gap-1.5"><Eye size={14} /> 1.2k <span className="hidden sm:inline">Views</span></span>
                   </div>
                </div>
 
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-1 sm:gap-2">
                   <button 
                     onClick={() => setEditingItem(item)}
-                    className="p-3 bg-slate-50 dark:bg-white/5 rounded-xl hover:text-[#E1B12C] transition-all"
+                    className="p-2 sm:p-3 bg-slate-50 dark:bg-white/5 rounded-lg sm:rounded-xl hover:text-[#E1B12C] transition-all"
                   >
-                    <Edit3 size={18} />
+                    <Edit3 size={16} className="sm:w-5 sm:h-5" />
                   </button>
                   <button 
                     onClick={() => confirmDelete(item)}
-                    className="p-3 bg-slate-50 dark:bg-white/5 rounded-xl hover:text-red-500 transition-all"
+                    className="p-2 sm:p-3 bg-slate-50 dark:bg-white/5 rounded-lg sm:rounded-xl hover:text-red-500 transition-all text-slate-400"
                   >
-                    <Trash2 size={18} />
+                    <Trash2 size={16} className="sm:w-5 sm:h-5" />
                   </button>
                 </div>
               </div>
@@ -310,24 +310,24 @@ function EditModal({ item, onClose, onSave }: { item: any; onClose: () => void; 
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 sm:p-12">
-      <div className="absolute inset-0 bg-[#0A2647]/80 backdrop-blur-md" onClick={onClose} />
-      <div className="bg-white dark:bg-slate-900 w-full max-w-4xl rounded-[3rem] shadow-2xl relative z-10 overflow-hidden flex flex-col max-h-[90vh]">
-        <div className="p-10 border-b border-slate-100 dark:border-white/5 flex justify-between items-center">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8 md:p-12">
+      <div className="absolute inset-0 bg-[#0A2647]/90 backdrop-blur-md" onClick={onClose} />
+      <div className="bg-white dark:bg-slate-900 w-full max-w-4xl rounded-3xl sm:rounded-[3rem] shadow-2xl relative z-10 overflow-hidden flex flex-col max-h-[90vh]">
+        <div className="p-6 sm:p-10 border-b border-slate-100 dark:border-white/5 flex justify-between items-center">
           <div>
-            <h2 className="text-2xl font-black text-[#0A2647] dark:text-white">Edit Content</h2>
-            <p className="text-slate-500 text-sm">Update details for {item.title}</p>
+            <h2 className="text-xl sm:text-2xl font-black text-[#0A2647] dark:text-white">Edit Content</h2>
+            <p className="text-slate-500 text-xs sm:text-sm">Update details for {item.title}</p>
           </div>
-          <button onClick={onClose} className="p-3 hover:bg-slate-100 dark:hover:bg-white/5 rounded-2xl text-slate-400">
+          <button onClick={onClose} className="p-2 sm:p-3 hover:bg-slate-100 dark:hover:bg-white/5 rounded-xl sm:rounded-2xl text-slate-400">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
           </button>
         </div>
 
-        <div className="p-10 overflow-y-auto space-y-8 flex-1 grid grid-cols-1 lg:grid-cols-2 gap-10">
+        <div className="p-6 sm:p-10 overflow-y-auto space-y-6 sm:space-y-8 flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-10">
           {/* Left Column: Image Replacement */}
           <div className="space-y-4">
-            <label className="text-xs font-black uppercase text-slate-400 tracking-widest pl-2">Cover Image</label>
-            <div className="relative group cursor-pointer aspect-video bg-slate-50 dark:bg-slate-800/50 rounded-[2rem] border-2 border-dashed border-slate-200 dark:border-slate-700 overflow-hidden flex items-center justify-center transition-all hover:bg-slate-100 dark:hover:bg-slate-800">
+            <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest pl-2">Cover Image</label>
+            <div className="relative group cursor-pointer aspect-video bg-slate-50 dark:bg-slate-800/50 rounded-2xl sm:rounded-[2rem] border-2 border-dashed border-slate-200 dark:border-slate-700 overflow-hidden flex items-center justify-center transition-all hover:bg-slate-100 dark:hover:bg-slate-800">
                {previewImage ? (
                  <img src={previewImage} alt="Preview" className="w-full h-full object-cover" />
                ) : (
@@ -337,63 +337,63 @@ function EditModal({ item, onClose, onSave }: { item: any; onClose: () => void; 
                  </div>
                )}
                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
-                  <span className="text-white font-bold bg-[#E1B12C] px-6 py-2 rounded-full shadow-xl">Change Image</span>
+                  <span className="text-white text-xs sm:text-sm font-bold bg-[#E1B12C] px-6 py-2 rounded-full shadow-xl">Change Image</span>
                </div>
                <input type="file" accept="image/*" onChange={handleFileChange} className="absolute inset-0 opacity-0 cursor-pointer" />
             </div>
-            <p className="text-xs text-slate-400 px-4">Click the area to replace the image. Ideal aspect ratio is 16:9.</p>
+            <p className="text-[10px] sm:text-xs text-slate-400 px-2 sm:px-4">Click the area to replace the image. Ideal aspect ratio is 16:9.</p>
           </div>
 
           {/* Right Column: Text Details */}
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             <div className="space-y-2">
-              <label className="text-xs font-black uppercase text-slate-400 tracking-widest pl-2">Title</label>
+              <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest pl-2">Title</label>
               <input 
                 value={data.title}
                 onChange={(e) => setData({ ...data, title: e.target.value })}
-                className="w-full px-6 py-4 rounded-2xl border border-slate-200 dark:border-white/10 dark:bg-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-[#E1B12C]"
+                className="w-full px-4 sm:px-6 py-3 sm:py-4 rounded-xl sm:rounded-2xl border border-slate-200 dark:border-white/10 dark:bg-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-[#E1B12C] text-sm sm:text-base"
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <div className="space-y-2">
-                <label className="text-xs font-black uppercase text-slate-400 tracking-widest pl-2">Category</label>
+                <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest pl-2">Category</label>
                 <input 
                   value={data.tag || (data.link ? 'Scholarship' : 'POST')}
                   onChange={(e) => setData({ ...data, tag: e.target.value })}
-                  className="w-full px-6 py-4 rounded-2xl border border-slate-200 dark:border-white/10 dark:bg-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-[#E1B12C]"
+                  className="w-full px-4 sm:px-6 py-3 sm:py-4 rounded-xl sm:rounded-2xl border border-slate-200 dark:border-white/10 dark:bg-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-[#E1B12C] text-sm sm:text-base"
                 />
               </div>
               {data.deadline && (
                 <div className="space-y-2">
-                  <label className="text-xs font-black uppercase text-slate-400 tracking-widest pl-2">Deadline</label>
+                  <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest pl-2">Deadline</label>
                   <input 
                     type="date"
                     value={data.deadline}
                     onChange={(e) => setData({ ...data, deadline: e.target.value })}
-                    className="w-full px-6 py-4 rounded-2xl border border-slate-200 dark:border-white/10 dark:bg-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-[#E1B12C]"
+                    className="w-full px-4 sm:px-6 py-3 sm:py-4 rounded-xl sm:rounded-2xl border border-slate-200 dark:border-white/10 dark:bg-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-[#E1B12C] text-sm sm:text-base"
                   />
                 </div>
               )}
             </div>
 
             <div className="space-y-2">
-              <label className="text-xs font-black uppercase text-slate-400 tracking-widest pl-2">Summary</label>
+              <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest pl-2">Summary</label>
               <textarea 
-                rows={5}
+                rows={4}
                 value={data.description || data.content?.substring(0, 200)}
                 onChange={(e) => setData({ ...data, description: e.target.value, content: e.target.value })}
-                className="w-full px-6 py-4 rounded-2xl border border-slate-200 dark:border-white/10 dark:bg-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-[#E1B12C] resize-none"
+                className="w-full px-4 sm:px-6 py-3 sm:py-4 rounded-xl sm:rounded-2xl border border-slate-200 dark:border-white/10 dark:bg-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-[#E1B12C] resize-none text-sm sm:text-base"
               />
             </div>
           </div>
         </div>
 
-        <div className="p-8 border-t border-slate-100 dark:border-white/5 bg-slate-50 dark:bg-slate-900/50 flex gap-4 justify-end">
-          <button onClick={onClose} className="px-8 py-4 font-bold text-slate-400 hover:text-slate-600 transition-colors">Cancel</button>
+        <div className="p-6 sm:p-8 border-t border-slate-100 dark:border-white/5 bg-slate-50 dark:bg-slate-900/50 flex flex-col sm:flex-row gap-2 sm:gap-4 justify-end">
+          <button onClick={onClose} className="px-8 py-3 sm:py-4 font-bold text-slate-400 hover:text-slate-600 transition-colors text-sm sm:text-base">Cancel</button>
           <button 
             onClick={handleSaveClick}
-            className="btn-primary !rounded-2xl px-12 py-4 shadow-xl shadow-yellow-500/20"
+            className="btn-primary !rounded-xl sm:!rounded-2xl px-8 sm:px-12 py-3 sm:py-4 shadow-xl shadow-yellow-500/20 text-sm sm:text-base"
           >
             Save Changes
           </button>
