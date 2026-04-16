@@ -11,7 +11,7 @@ export default async function ContactPage() {
   };
 
   try {
-    const res = await fetch('http://localhost:5000/api/settings', { 
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/settings`, { 
       next: { revalidate: 60 } 
     });
     if (res.ok) {

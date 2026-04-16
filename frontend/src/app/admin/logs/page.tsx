@@ -16,7 +16,7 @@ export default function AuditLogs() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/admin/users/all/logs', {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/users/all/logs`, {
       headers: { 'Authorization': `Bearer ${localStorage.getItem('imboni_token')}` }
     })
       .then(res => res.json())

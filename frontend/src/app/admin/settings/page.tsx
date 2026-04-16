@@ -20,7 +20,7 @@ export default function AdminSettings() {
   });
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/settings')
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/settings`)
       .then(res => res.json())
       .then(data => {
         setSettings(data);
@@ -40,7 +40,7 @@ export default function AdminSettings() {
     setSaving(true);
     const token = localStorage.getItem('imboni_token');
     try {
-      const res = await fetch('http://localhost:5000/api/settings', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/settings`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

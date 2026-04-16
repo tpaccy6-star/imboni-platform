@@ -32,7 +32,7 @@ export default function CMSHub() {
     if (activeTab === 'posts') endpoint = '/api/admin/cms/posts';
     if (activeTab === 'pages') endpoint = '/api/admin/cms/pages';
 
-    fetch(`http://localhost:5000${endpoint}`, {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${endpoint}`, {
       headers: { 'Authorization': `Bearer ${localStorage.getItem('imboni_token')}` }
     })
       .then(res => res.json())
@@ -56,7 +56,7 @@ export default function CMSHub() {
     if (activeTab === 'pages') endpoint = `/api/admin/cms/pages/${id}`;
 
     try {
-      const res = await fetch(`http://localhost:5000${endpoint}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${endpoint}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${localStorage.getItem('imboni_token')}` }
       });
@@ -99,7 +99,7 @@ export default function CMSHub() {
     }
 
     try {
-      const res = await fetch(`http://localhost:5000${endpoint}`, requestOptions);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${endpoint}`, requestOptions);
       if (res.ok) {
         fetchContent();
         setEditingItem(null);

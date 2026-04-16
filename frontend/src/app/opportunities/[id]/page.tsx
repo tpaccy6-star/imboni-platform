@@ -14,8 +14,8 @@ export default function OpportunityDetails() {
   useEffect(() => {
     if (id) {
       Promise.all([
-        fetch(`http://localhost:5000/api/opportunities`),
-        fetch(`http://localhost:5000/api/settings`)
+        fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/opportunities`),
+        fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/settings`)
       ])
         .then(async ([resOp, resSet]) => {
           const ops = await resOp.json();
@@ -27,7 +27,7 @@ export default function OpportunityDetails() {
 
           // Track view count silently
           if (found) {
-             fetch(`http://localhost:5000/api/opportunities/${id}/view`, { method: 'POST' }).catch(() => {});
+             fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/opportunities/${id}/view`, { method: 'POST' }).catch(() => {});
           }
         })
         .catch(err => {

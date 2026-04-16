@@ -1,7 +1,9 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageSquare, X, Send, Sparkles, Loader2 } from 'lucide-react';
+import { MessageSquare, X, Send, Sparkles, Loader2, Copy, Check, Maximize2, Minimize2 } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 export default function AdminChatbot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,6 +12,8 @@ export default function AdminChatbot() {
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+  const [isExpanded, setIsExpanded] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Scroll to bottom whenever messages update
@@ -27,7 +31,7 @@ export default function AdminChatbot() {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/admin/assistant/chat', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/assistant/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -51,31 +55,29 @@ export default function AdminChatbot() {
     }
   };
 
-  const formatMessageText = (text: string) => {
-    // Basic markdown parsing for bold text and line breaks
-    return text.split('\n').map((line, i) => {
-      if (line.trim() === '') return <div key={i} className="h-2" />;
-      
-      // Handle bold **text**
-      const parts = line.split(/(\*\*.*?\*\*)/g);
-      
-      return (
-        <p key={i} className="mb-1 last:mb-0 text-sm">
-          {parts.map((p, j) => {
-             if (p.startsWith('**') && p.endsWith('**')) {
-               return <strong key={j} className="font-bold text-inherit">{p.slice(2, -2)}</strong>;
-             }
-             // Very basic link mapping [Label](URL) could be added here if needed
-             // For now, render standard text
-             return p;
-          })}
-        </p>
-      );
-    });
+  const handleCopy = (text: string, index: number) => {
+    navigator.clipboard.writeText(text);
+    setCopiedIndex(index);
+    setTimeout(() => setCopiedIndex(null), 2000);
   };
+
+  // Custom CSS classes for the Markdown rendering to ensure great table formatting
+  const markdownStyles = `
+    .markdown-content table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; font-size: 0.8rem; }
+    .markdown-content th { background-color: rgba(0,0,0,0.05); padding: 8px; text-align: left; font-weight: bold; border: 1px solid rgba(0,0,0,0.1); }
+    .markdown-content td { padding: 8px; border: 1px solid rgba(0,0,0,0.1); }
+    .dark .markdown-content th { background-color: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); }
+    .dark .markdown-content td { border-color: rgba(255,255,255,0.1); }
+    .markdown-content a { color: #E1B12C; font-weight: bold; }
+    .markdown-content a:hover { text-decoration: underline; }
+    .markdown-content ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 0.5rem; }
+    .markdown-content ol { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 0.5rem; }
+    .markdown-content p { margin-bottom: 0.5rem; }
+  `;
 
   return (
     <>
+      <style>{markdownStyles}</style>
       {/* Floating Toggle Button */}
       <button 
         onClick={() => setIsOpen(true)}
@@ -86,7 +88,7 @@ export default function AdminChatbot() {
 
       {/* Chat Window */}
       <div 
-        className={`fixed bottom-8 right-8 z-[100] w-[400px] h-[600px] max-h-[80vh] max-w-[90vw] bg-white dark:bg-slate-900 rounded-[2rem] shadow-2xl border border-slate-200 dark:border-white/10 flex flex-col transform transition-all duration-500 origin-bottom-right ${isOpen ? 'scale-100 opacity-100' : 'scale-75 opacity-0 pointer-events-none'}`}
+        className={`fixed bottom-8 right-8 z-[100] ${isExpanded ? 'w-[80vw] h-[85vh]' : 'w-[450px] h-[650px] max-h-[80vh] max-w-[90vw]'} bg-white dark:bg-slate-900 rounded-[2rem] shadow-2xl border border-slate-200 dark:border-white/10 flex flex-col transform transition-all duration-500 origin-bottom-right ${isOpen ? 'scale-100 opacity-100' : 'scale-75 opacity-0 pointer-events-none'}`}
       >
         {/* Header */}
         <div className="p-4 border-b border-slate-100 dark:border-white/10 flex justify-between items-center bg-[#0A2647] text-white rounded-t-[2rem]">
@@ -99,21 +101,42 @@ export default function AdminChatbot() {
                 <p className="text-[10px] text-slate-300 uppercase tracking-widest">Research Assistant</p>
              </div>
           </div>
-          <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-white/10 rounded-full transition-colors">
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button onClick={() => setIsExpanded(!isExpanded)} className="p-2 hover:bg-white/10 rounded-full transition-colors hidden md:block" title={isExpanded ? "Collapse size" : "Expand size"}>
+              {isExpanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+            </button>
+            <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-white/10 rounded-full transition-colors" title="Close chat">
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Chat History */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50 dark:bg-slate-900/50">
           {messages.map((m, idx) => (
             <div key={idx} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-               <div className={`max-w-[85%] p-4 rounded-2xl ${
+               <div className={`relative ${isExpanded ? 'max-w-[75%]' : 'max-w-[85%]'} p-4 rounded-2xl ${
                  m.role === 'user' 
-                 ? 'bg-[#0A2647] text-white rounded-br-sm' 
-                 : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-sm border border-slate-100 dark:border-white/5 rounded-bl-sm'
+                 ? 'bg-[#0A2647] text-white rounded-br-sm text-sm' 
+                 : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-sm border border-slate-100 dark:border-white/5 rounded-bl-sm group text-sm'
                }`}>
-                  {formatMessageText(m.content)}
+                  {m.role === 'user' ? (
+                     <p>{m.content}</p>
+                  ) : (
+                     <div className="markdown-content overflow-x-auto">
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
+                     </div>
+                  )}
+                  
+                  {m.role === 'assistant' && (
+                    <button 
+                      onClick={() => handleCopy(m.content, idx)}
+                      className="absolute -bottom-3 -right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-lg text-slate-400 hover:text-[#E1B12C] dark:hover:text-[#E1B12C] p-1.5 rounded-lg flex items-center justify-center z-10"
+                      title="Copy response"
+                    >
+                      {copiedIndex === idx ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Copy className="w-3.5 h-3.5" />}
+                    </button>
+                  )}
                </div>
             </div>
           ))}

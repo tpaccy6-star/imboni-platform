@@ -19,7 +19,7 @@ export default function SystemHealth() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/admin/analytics/health', {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/analytics/health`, {
       headers: { 'Authorization': `Bearer ${localStorage.getItem('imboni_token')}` }
     })
       .then(res => res.json())

@@ -78,7 +78,7 @@ export default function UploadOpportunity() {
         payload.append('image', imageFile);
       }
 
-      const response = await fetch('http://localhost:5000/api/opportunities', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/opportunities`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('imboni_token')}`

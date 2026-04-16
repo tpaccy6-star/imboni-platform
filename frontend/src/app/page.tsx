@@ -9,7 +9,7 @@ export default async function Home() {
   let featuredScholarships: any[] = [];
   try {
     // Fetch from backend, caches by default but revalidates every 60 seconds
-    const res = await fetch('http://localhost:5000/api/opportunities', { 
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/opportunities`, { 
       next: { revalidate: 60 } 
     });
     if (res.ok) {

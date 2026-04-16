@@ -12,7 +12,7 @@ export default function AdminAnalytics() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/admin/analytics/traffic', {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/analytics/traffic`, {
       headers: { 'Authorization': `Bearer ${localStorage.getItem('imboni_token')}` }
     })
       .then(res => res.json())

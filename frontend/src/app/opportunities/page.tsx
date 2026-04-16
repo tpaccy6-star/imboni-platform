@@ -15,7 +15,7 @@ export default function OpportunitiesPage() {
   const filters = ['All', 'Full Funding', 'Europe', 'Global', 'Masters', 'Research'];
 
   React.useEffect(() => {
-    fetch('http://localhost:5000/api/opportunities')
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/opportunities`)
       .then(res => res.json())
       .then(data => {
         // Sort by deadline (nearest first)

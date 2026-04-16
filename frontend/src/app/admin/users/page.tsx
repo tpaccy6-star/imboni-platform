@@ -24,7 +24,7 @@ export default function UserManagement() {
 
   const fetchUsers = () => {
     setLoading(true);
-    fetch('http://localhost:5000/api/admin/users', {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/users`, {
       headers: { 'Authorization': `Bearer ${localStorage.getItem('imboni_token')}` }
     })
       .then(res => res.json())
@@ -35,7 +35,7 @@ export default function UserManagement() {
   };
 
   const handleRoleChange = async (userId: string, newRole: string) => {
-    const res = await fetch('http://localhost:5000/api/admin/users/role', {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/users/role`, {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',

@@ -20,7 +20,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/admin/dashboard/stats', {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/dashboard/stats`, {
           headers: { 'Authorization': `Bearer ${localStorage.getItem('imboni_token')}` }
         });
         if (res.ok) {
