@@ -1,0 +1,157 @@
+'use client';
+
+import React, { useState, useEffect, useRef } from 'react';
+import { MessageSquare, X, Send, Sparkles, Loader2 } from 'lucide-react';
+
+export default function AdminChatbot() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState<{ role: 'user' | 'assistant'; content: string }[]>([
+    { role: 'assistant', content: "Hello Admin! I'm your intelligent Scholarship Research Assistant. How can I help you find trending, fully funded, or specific scholarships today?" }
+  ]);
+  const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Scroll to bottom whenever messages update
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, isOpen]);
+
+  const handleSend = async () => {
+    if (!input.trim()) return;
+
+    const userMsg = input.trim();
+    setInput('');
+    const newMessages: { role: 'user' | 'assistant'; content: string }[] = [...messages, { role: 'user', content: userMsg }];
+    setMessages(newMessages);
+    setLoading(true);
+
+    try {
+      const response = await fetch('http://localhost:5000/api/admin/assistant/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('imboni_token')}`
+        },
+        body: JSON.stringify({ messages: newMessages })
+      });
+
+      const data = await response.json();
+      
+      if (response.ok) {
+        setMessages([...newMessages, { role: 'assistant', content: data.reply }]);
+      } else {
+        setMessages([...newMessages, { role: 'assistant', content: `Error: ${data.error || 'Failed to communicate with AI server. Please check your GROQ_API_KEY in the backend.'}` }]);
+      }
+    } catch (error) {
+      console.error(error);
+      setMessages([...newMessages, { role: 'assistant', content: 'Connection error while attempting to reach the AI endpoint.' }]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatMessageText = (text: string) => {
+    // Basic markdown parsing for bold text and line breaks
+    return text.split('\n').map((line, i) => {
+      if (line.trim() === '') return <div key={i} className="h-2" />;
+      
+      // Handle bold **text**
+      const parts = line.split(/(\*\*.*?\*\*)/g);
+      
+      return (
+        <p key={i} className="mb-1 last:mb-0 text-sm">
+          {parts.map((p, j) => {
+             if (p.startsWith('**') && p.endsWith('**')) {
+               return <strong key={j} className="font-bold text-inherit">{p.slice(2, -2)}</strong>;
+             }
+             // Very basic link mapping [Label](URL) could be added here if needed
+             // For now, render standard text
+             return p;
+          })}
+        </p>
+      );
+    });
+  };
+
+  return (
+    <>
+      {/* Floating Toggle Button */}
+      <button 
+        onClick={() => setIsOpen(true)}
+        className={`fixed bottom-8 right-8 z-[100] w-14 h-14 bg-[#E1B12C] text-[#0A2647] rounded-full shadow-2xl flex items-center justify-center transform transition-all duration-300 hover:scale-110 active:scale-95 ${isOpen ? 'scale-0 opacity-0 pointer-events-none' : 'scale-100 opacity-100'}`}
+      >
+        <Sparkles className="w-6 h-6" />
+      </button>
+
+      {/* Chat Window */}
+      <div 
+        className={`fixed bottom-8 right-8 z-[100] w-[400px] h-[600px] max-h-[80vh] max-w-[90vw] bg-white dark:bg-slate-900 rounded-[2rem] shadow-2xl border border-slate-200 dark:border-white/10 flex flex-col transform transition-all duration-500 origin-bottom-right ${isOpen ? 'scale-100 opacity-100' : 'scale-75 opacity-0 pointer-events-none'}`}
+      >
+        {/* Header */}
+        <div className="p-4 border-b border-slate-100 dark:border-white/10 flex justify-between items-center bg-[#0A2647] text-white rounded-t-[2rem]">
+          <div className="flex items-center gap-3">
+             <div className="w-10 h-10 bg-[#E1B12C] text-[#0A2647] rounded-full flex items-center justify-center">
+                <Sparkles className="w-5 h-5" />
+             </div>
+             <div>
+                <h3 className="font-bold text-sm">Scholarship AI</h3>
+                <p className="text-[10px] text-slate-300 uppercase tracking-widest">Research Assistant</p>
+             </div>
+          </div>
+          <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-white/10 rounded-full transition-colors">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Chat History */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50 dark:bg-slate-900/50">
+          {messages.map((m, idx) => (
+            <div key={idx} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+               <div className={`max-w-[85%] p-4 rounded-2xl ${
+                 m.role === 'user' 
+                 ? 'bg-[#0A2647] text-white rounded-br-sm' 
+                 : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-sm border border-slate-100 dark:border-white/5 rounded-bl-sm'
+               }`}>
+                  {formatMessageText(m.content)}
+               </div>
+            </div>
+          ))}
+          {loading && (
+             <div className="flex justify-start">
+               <div className="bg-white dark:bg-slate-800 p-4 rounded-2xl rounded-bl-sm shadow-sm border border-slate-100 dark:border-white/5 flex items-center gap-2 text-slate-400">
+                 <Loader2 className="w-4 h-4 animate-spin text-[#E1B12C]" />
+                 <span className="text-xs font-bold uppercase tracking-widest">Researching...</span>
+               </div>
+             </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+
+        {/* Input Area */}
+        <div className="p-4 border-t border-slate-100 dark:border-white/10 bg-white dark:bg-slate-900 rounded-b-[2rem]">
+          <form 
+            onSubmit={(e) => { e.preventDefault(); handleSend(); }}
+            className="relative flex items-center"
+          >
+            <input 
+              type="text" 
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Ask about trending scholarships..."
+              className="w-full pl-6 pr-14 py-4 rounded-xl border border-slate-200 dark:border-white/10 focus:ring-2 focus:ring-[#E1B12C] outline-none text-sm dark:bg-slate-800 text-[#0A2647] dark:text-white"
+              disabled={loading}
+            />
+            <button 
+              type="submit"
+              disabled={loading || !input.trim()}
+              className="absolute right-2 p-3 bg-[#E1B12C] text-[#0A2647] rounded-lg disabled:opacity-50 hover:bg-[#c99d25] transition-colors"
+            >
+              <Send className="w-4 h-4" />
+            </button>
+          </form>
+        </div>
+      </div>
+    </>
+  );
+}

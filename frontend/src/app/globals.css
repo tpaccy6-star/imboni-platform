@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+:root {
+  --primary: #0A2647;
+  --primary-light: #144272;
+  --secondary: #E1B12C;
+  --accent: #205295;
+  --background: #ffffff;
+  --foreground: #0A2647;
+  --muted: #64748b;
+  --glass: rgba(255, 255, 255, 0.8);
+}
+
+@theme {
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #020617;
+    --foreground: #f8fafc;
+    --glass: rgba(15, 23, 42, 0.8);
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+.glass-morphism {
+  background: var(--glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@layer components {
+  .btn-primary {
+    @apply px-6 py-3 bg-[#E1B12C] text-[#0A2647] font-bold rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-yellow-500/20 active:scale-95;
+  }
+
+  .btn-outline {
+    @apply px-6 py-3 border-2 border-[#E1B12C] text-[#E1B12C] font-bold rounded-lg transition-all duration-300 hover:bg-[#E1B12C] hover:text-[#0A2647] active:scale-95;
+  }
+
+  .card-hover {
+    @apply transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-blue-500/10;
+  }
+}

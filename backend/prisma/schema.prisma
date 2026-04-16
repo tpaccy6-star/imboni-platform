@@ -1,0 +1,119 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String   @id @default(cuid())
+  email           String   @unique
+  password        String
+  name            String?
+  role            String   @default("VIEWER") // VIEWER, EDITOR, ADMIN, SUPERADMIN
+  twoFactorEnabled Boolean @default(false)
+  twoFactorSecret  String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  leads           Lead[]
+  auditLogs       AuditLog[]
+  notifications   Notification[]
+  posts           CMS_Post[]
+}
+
+model Opportunity {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  tag         String
+  deadline    String?
+  link        String
+  image       String?
+  viewCount   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model CMS_Post {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  content     String
+  authorId    String
+  author      User     @relation(fields: [authorId], references: [id])
+  published   Boolean  @default(false)
+  viewCount   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model CMS_Page {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  content     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Lead {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  serviceType     String
+  message         String?
+  status          String   @default("PENDING")
+  createdAt       DateTime @default(now())
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  action    String   // e.g., "CREATE_OPPORTUNITY", "UPDATE_SETTINGS"
+  target    String?  // e.g., "Opportunity:clj...1"
+  details   String?  // JSON string of changes
+  ipAddress String?
+  createdAt DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  title     String
+  message   String
+  type      String   // e.g., "SYSTEM", "USER_ACTION", "SECURITY"
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model SystemMetric {
+  id        String   @id @default(cuid())
+  name      String   // e.g., "SERVER_UPTIME", "RESPONSE_TIME"
+  value     Float
+  createdAt DateTime @default(now())
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  service   String
+  message   String
+  createdAt DateTime @default(now())
+}
+
+model GlobalSettings {
+  id              Int      @id @default(1)
+  whatsappNumber  String?
+  contactPhone    String?
+  contactEmail    String?
+  instagramHandle String?
+  updatedAt       DateTime @updatedAt
+}
