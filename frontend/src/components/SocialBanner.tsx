@@ -24,7 +24,7 @@ export default function SocialBanner() {
       ),
       color: 'bg-[#FF0000]',
       text: 'Subscribe',
-      link: 'https://youtube.com/@ImboniApplyHub'
+      link: 'https://youtube.com/@@imboniapplyhub-tjb'
     },
     {
       name: 'Instagram',
@@ -46,7 +46,7 @@ export default function SocialBanner() {
       ),
       color: 'bg-black',
       text: 'Follow',
-      link: 'https://x.com/ImboniApplyHub'
+      link: 'https://x.com/TuyishimeJohnwa'
     },
     {
       name: 'Facebook',
