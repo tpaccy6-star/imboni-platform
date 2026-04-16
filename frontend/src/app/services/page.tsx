@@ -1,7 +1,13 @@
 import React from 'react';
+import { Metadata } from 'next';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+
+export const metadata: Metadata = {
+  title: "Professional Writing & Visa Services | Imboni Hub",
+  description: "Get professional help with CV writing, admission essays, and visa applications from the experts at Imboni Hub.",
+};
 
 export default function ServicesPage() {
   const services = [

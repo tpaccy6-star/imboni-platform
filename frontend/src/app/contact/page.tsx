@@ -1,6 +1,12 @@
 import React from 'react';
+import { Metadata } from 'next';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+
+export const metadata: Metadata = {
+  title: "Contact Imboni Hub | Expert Scholarship Support",
+  description: "Get in touch with Imboni Hub for expert guidance on scholarships, essay writing, and visa applications.",
+};
 
 export default async function ContactPage() {
   let settings = {

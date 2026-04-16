@@ -17,6 +17,26 @@ const outfit = Outfit({
 export const metadata: Metadata = {
   title: "Imboni Application Hub | Your Gateway to Global Scholarships",
   description: "Unlocking global opportunities for African scholars. Access scholarships, jobs, and professional writing services.",
+  keywords: ["Scholarships", "African Students", "Study Abroad", "Imboni Application Hub", "Rwanda Scholarships", "CV Writing Services", "Visa Consulting"],
+  authors: [{ name: "Imboni Hub Team" }],
+  openGraph: {
+    title: "Imboni Application Hub",
+    description: "Unlocking global opportunities for African scholars.",
+    url: "https://imbonihub.com",
+    siteName: "Imboni Hub",
+    images: [{ url: "/logo.png", width: 800, height: 600 }],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Imboni Application Hub",
+    description: "Your Gateway to Global Scholarships and Professional Success.",
+    images: ["/logo.png"],
+  },
+  alternates: {
+    canonical: "/",
+  }
 };
 
 export default function RootLayout({

@@ -1,6 +1,12 @@
 import React from 'react';
+import { Metadata } from 'next';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+
+export const metadata: Metadata = {
+  title: "About Imboni Hub | Our Mission and Team",
+  description: "Learn about Imboni Hub's mission to bridge the gap between African scholars and global opportunities.",
+};
 
 export default function AboutPage() {
   return (
