@@ -98,7 +98,7 @@ export default function AboutPage() {
                 role: "Chief Executive Officer",
                 icon: "👔",
                 image: "/Ceo.jpeg",
-                socials: { email: "imboniapplyhub@gmail.com", whatsapp: "0789211992", instagram: "imboniapplyhub", twitter: "TuyishimeJohnwa" }
+                socials: { email: "imboniapplyhub@gmail.com", whatsapp: "0789211992", instagram: "https://www.instagram.com/imboniapplyhub", twitter: "https://x.com/TuyishimeJohnwa" }
               },
               {
                 name: "Lead Dev",
