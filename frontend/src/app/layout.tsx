@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://imboniapplicationhub.vercel.app'),
   title: "Imboni Application Hub | Your Gateway to Global Scholarships",
   description: "Unlocking global opportunities for African scholars. Access scholarships, jobs, and professional writing services.",
-  keywords: ["Scholarships", "African Students", "Study Abroad", "Imboni Application Hub", "Rwanda Scholarships", "CV Writing Services", "Visa Consulting"],
+  keywords: ["Scholarships", "African Students", "Study Abroad", "Imboni Application Hub", "Rwanda Scholarships", "CV Writing Services", "Visa Consulting", "John TUYISHIME", "TUYIRINGIRE Pacifique"],
   authors: [{ name: "Imboni Hub Team" }],
   openGraph: {
     title: "Imboni Application Hub",
@@ -48,6 +48,41 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${outfit.variable} antialiased`}>
       <body className="min-h-screen bg-white text-[#0A2647]">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "name": "Imboni Application Hub",
+              "alternateName": "Imboni Hub",
+              "url": "https://imboniapplicationhub.vercel.app",
+              "logo": "https://imboniapplicationhub.vercel.app/logo.png",
+              "founder": [
+                {
+                  "@type": "Person",
+                  "name": "John TUYISHIME",
+                  "jobTitle": "CEO",
+                  "sameAs": ["https://x.com/TuyishimeJohnwa"]
+                }
+              ],
+              "employee": [
+                {
+                  "@type": "Person",
+                  "name": "TUYIRINGIRE Pacifique",
+                  "jobTitle": "Lead Developer",
+                  "sameAs": ["https://x.com/Tuyipaccy"]
+                }
+              ],
+              "contactPoint": {
+                "@type": "ContactPoint",
+                "telephone": "+250789211992",
+                "contactType": "customer service",
+                "email": "imboniapplyhub@gmail.com"
+              }
+            })
+          }}
+        />
         {children}
         <WhatsAppButton />
         <DeveloperNotice />
